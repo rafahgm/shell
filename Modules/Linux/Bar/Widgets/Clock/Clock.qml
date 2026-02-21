@@ -9,10 +9,9 @@ import qs.Services
 Item {
     id: root
     property bool borderless: Config.options.bar.borderless
-    property bool verbose: Config.options.bar.verbose
+    property bool verbose
     implicitWidth: rowLayout.implicitWidth
     implicitHeight: Appearance.sizes.barHeight
-
 
     RowLayout {
         id: rowLayout

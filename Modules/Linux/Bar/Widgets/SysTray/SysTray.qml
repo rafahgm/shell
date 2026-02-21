@@ -24,47 +24,9 @@ Item {
     property bool invertPins: Config.options.tray.invertPinnedItems
     property list<var> pinnedItems: TrayService.pinnedItems
     property list<var> unpinnedItems: TrayService.unpinnedItems
-    onUnpinnedItemsChanged: {
-        if (unpinnedItems.length == 0)
-            root.closeOverflowMenu();
-    }
-
-    function grabFocus() {
-        focusGrab.active = true;
-    }
 
     function setExtraWindowAndGrabFocus(window) {
         root.activeMenu = window;
-        root.grabFocus();
-    }
-
-    function releaseFocus() {
-        focusGrab.active = false;
-    }
-
-    function closeOverflowMenu() {
-        focusGrab.active = false;
-    }
-
-    onTrayOverflowOpenChanged: {
-        if (root.trayOverflowOpen) {
-            root.grabFocus();
-        }
-    }
-
-
-    NiriFocusGrab {
-        id: focusGrab
-        active: (root.trayOverflowOpen && overflowPopup.QsWindow?.window !== null) || root.activeMenu !== null
-        windows: [overflowPopup.QsWindow?.window, root.activeMenu]
-        onCleared: {
-            console.log('onCleared')
-            root.trayOverflowOpen = false;
-            if (root.activeMenu) {
-                root.activeMenu.close();
-                root.activeMenu = null;
-            }
-        }
     }
 
     GridLayout {
@@ -123,7 +85,6 @@ Item {
                             item: modelData
                             Layout.fillHeight: !root.vertical
                             Layout.fillWidth: root.vertical
-                            onMenuClosed: root.releaseFocus()
                             onMenuOpened: qsWindow => root.setExtraWindowAndGrabFocus(qsWindow)
                         }
                     }

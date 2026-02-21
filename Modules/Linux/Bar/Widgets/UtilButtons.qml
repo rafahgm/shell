@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 
@@ -145,9 +144,7 @@ Item {
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: event => {
                     if (Appearance.m3colors.darkmode) {
-                        Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode light --noswitch`);
                     } else {
-                        Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode dark --noswitch`);
                     }
                 }
                 MaterialSymbol {

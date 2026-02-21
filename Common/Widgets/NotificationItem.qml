@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Services.Notifications
 
 import qs.Common

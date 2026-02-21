@@ -12,7 +12,6 @@ import QtQuick.Layouts
 import QtQuick.Window
 import Quickshell
 import Quickshell.Io
-import Quickshell.Hyprland
 
 import qs.Services
 import qs.Common
@@ -38,7 +37,6 @@ ApplicationWindow {
     Component.onCompleted: {
         Config.readWriteDelay = 0;
         Config.blockWrites = true;
-        MaterialThemeLoader.reapplyTheme();
     }
 
     minimumWidth: 400

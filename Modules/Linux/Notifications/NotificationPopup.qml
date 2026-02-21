@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 
 import qs.Common
 import qs.Common.Widgets
@@ -14,7 +13,7 @@ Scope {
     PanelWindow {
         id: root
         visible: (NotificationsService.popupList.length > 0) && !GlobalStates.screenLocked
-        screen: Quickshell.screens.find(s => s.name === Hyprland.focusedMonitor?.name) ?? null
+        screen: Quickshell.screens.find(s => s.name === NiriService.currentOutput) ?? null
 
         WlrLayershell.namespace: "quickshell:notificationPopup"
         WlrLayershell.layer: WlrLayer.Overlay

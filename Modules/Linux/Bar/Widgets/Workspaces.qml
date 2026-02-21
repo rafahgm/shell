@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
-import Quickshell.Hyprland
 import Quickshell.Widgets
 import Qt5Compat.GraphicalEffects
 

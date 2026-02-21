@@ -20,7 +20,7 @@ Item {
 
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: BrightnessService.getMonitorForScreen(screen)
-    property real useShortenedForm: Appearance.sizes.barShortenScreenWidthThreshold <= screen?.width
+    property real useShortenedForm: screen?.width <= Appearance.sizes.barShortenScreenWidthThreshold 
 
     component VerticalBarSeparator: Rectangle {
         Layout.topMargin: Appearance.sizes.baseBarHeight / 3
