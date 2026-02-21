@@ -387,6 +387,10 @@ Singleton {
                 property bool autoKillNotificationDaemons: false
                 property bool autoKillTrays: false
             }
+
+            property JsonObject osd: JsonObject {
+                property int timeout: 1000
+            }
         }
     }
 
