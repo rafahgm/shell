@@ -4,6 +4,7 @@ import Quickshell
 import qs.Common
 import qs.Modules.Linux.Bar
 import qs.Modules.Linux.Notifications
+import qs.Modules.Linux.MediaControls
 import qs.Modules.Linux.OnScreenDisplay
 
 Scope {
@@ -14,5 +15,10 @@ Scope {
     PanelLoader {
         component: NotificationPopup {}
     }
-        PanelLoader { component: OnScreenDisplay {} }
+    PanelLoader {
+        component: MediaControls {}
+    }
+    PanelLoader {
+        component: OnScreenDisplay {}
+    }
 }
