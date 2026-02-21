@@ -9,7 +9,7 @@ import qs.Services
 Item {
     id: root
     property bool borderless: Config.options.bar.borderless
-    property bool showDate: Config.options.bar.verbose
+    property bool verbose: Config.options.bar.verbose
     implicitWidth: rowLayout.implicitWidth
     implicitHeight: Appearance.sizes.barHeight
 
@@ -23,21 +23,19 @@ Item {
             font.pixelSize: Appearance.font.pixelSize.large
             font.family: Appearance.font.family.monospace
             color: Appearance.colors.colOnLayer1
-            text: DateTimeService.time
+            text: root.verbose ? DateTimeService.time : DateTimeService.shortTime
         }
 
         StyledText {
-            visible: root.showDate
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer1
             text: "•"
         }
 
         StyledText {
-            visible: root.showDate
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer1
-            text: DateTimeService.longDate
+            text: root.verbose ? DateTimeService.longDate : DateTimeService.shortDate
         }
     }
 

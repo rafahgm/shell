@@ -183,6 +183,14 @@ Singleton {
                 }
             }
 
+            property JsonObject battery: JsonObject {
+                property int low: 20
+                property int critical: 5
+                property int full: 101
+                property bool automaticSuspend: true
+                property int suspend: 3
+            }
+
             property JsonObject interactions: JsonObject {
                 property JsonObject scrolling: JsonObject {
                     property bool fasterTouchpadScroll: false // Enable faster scrolling with touchpad

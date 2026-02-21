@@ -13,13 +13,14 @@ import qs.Modules.Linux.Bar.Widgets.Resources
 import qs.Modules.Linux.Bar.Widgets.Clock
 import qs.Modules.Linux.Bar.Widgets.SysTray
 import qs.Modules.Linux.Bar.Widgets.Weather
+import qs.Modules.Linux.Bar.Widgets.Battery
 
 Item {
     id: root
 
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: BrightnessService.getMonitorForScreen(screen)
-    property real useShortenedForm: (Appearance.sizes.barHellaShortenScreenWidthThreshold >= screen?.width) ? 2 : (Appearance.sizes.barShortenScreenWidthThreshold >= screen?.width) ? 1 : 0
+    property real useShortenedForm: Appearance.sizes.barShortenScreenWidthThreshold <= screen?.width
 
     component VerticalBarSeparator: Rectangle {
         Layout.topMargin: Appearance.sizes.baseBarHeight / 3
@@ -99,7 +100,6 @@ Item {
                 Layout.rightMargin: Appearance.rounding.screenRounding
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                visible: root.useShortenedForm === 0
             }
         }
     }
@@ -118,12 +118,11 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
 
             Resources {
-                alwaysShowAllResources: root.useShortenedForm === 2
-                Layout.fillWidth: root.useShortenedForm === 2
+                alwaysShowAllResources: !root.useShortenedForm
+                Layout.fillWidth: !root.useShortenedForm
             }
 
             Media {
-                visible: root.useShortenedForm < 2
                 Layout.fillWidth: true
             }
         }
@@ -173,13 +172,17 @@ Item {
                 id: rightCenterGroupContent
 
                 Clock {
-                    showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
+                    verbose: !root.useShortenedForm
                     Layout.alignment: Qt.AlignVCenter
                     Layout.fillWidth: true
                 }
 
                 UtilButtons {
-                    visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                BatteryIndicator {
+                    visible: BatteryService.available
                     Layout.alignment: Qt.AlignVCenter
                 }
             }
@@ -312,7 +315,6 @@ Item {
             }
 
             SysTray {
-                visible: root.useShortenedForm === 0
                 Layout.fillWidth: false
                 Layout.fillHeight: true
                 invertSide: Config?.options.bar.bottom
