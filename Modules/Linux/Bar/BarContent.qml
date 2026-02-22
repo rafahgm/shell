@@ -43,10 +43,9 @@ Item {
     // Background
     Rectangle {
         id: barBackground
-        anchors {
-            fill: parent
-            margins: Config.options.bar.cornerStyle === 1 ? (Appearance.sizes.gapsOut) : 0 // idk why but +1 is needed
-        }
+        anchors.fill: parent
+        anchors.margins: Config.options.bar.cornerStyle === Enums.CornerStyle.Float ? (Appearance.sizes.gapsOut) : 0 // idk why but +1 is needed
+        
         color: Config.options.bar.showBackground ? Appearance.colors.colLayer0 : "transparent"
         radius: Config.options.bar.cornerStyle === 1 ? Appearance.rounding.windowRounding : 0
         border.width: Config.options.bar.cornerStyle === 1 ? 1 : 0
@@ -56,22 +55,17 @@ Item {
     FocusedMouseScrollArea { // Left side | scroll to change brightness
         id: barLeftSideMouseArea
 
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            left: parent.left
-            right: middleSection.left
-        }
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: middleSection.left
+        
         implicitWidth: leftSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
 
         onScrollDown: root.brightnessMonitor.setBrightness(root.brightnessMonitor.brightness - 0.05)
         onScrollUp: root.brightnessMonitor.setBrightness(root.brightnessMonitor.brightness + 0.05)
         onMovedAway: GlobalStates.osdBrightnessOpen = false
-        onPressed: event => {
-            if (event.button === Qt.LeftButton)
-                GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
-        }
 
         // Visual content
         ScrollHint {
@@ -91,8 +85,7 @@ Item {
             LeftSidebarButton {
                 id: leftSidebarButton
                 Layout.alignment: Qt.AlignVCenter
-                Layout.leftMargin: Appearance.rounding.screenRounding
-                colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                Layout.leftMargin: Appearance.rounding.screenRounding + 5
             }
 
             ActiveWindow {
@@ -164,10 +157,6 @@ Item {
             implicitWidth: rightCenterGroupContent.implicitWidth
             implicitHeight: rightCenterGroupContent.implicitHeight
 
-            onPressed: {
-                GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
-            }
-
             BarGroup {
                 id: rightCenterGroupContent
                 anchors.fill: parent
@@ -227,15 +216,13 @@ Item {
                 id: rightSidebarButton
 
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.rightMargin: Appearance.rounding.screenRounding
+                Layout.rightMargin: Appearance.rounding.screenRounding + 5
                 Layout.fillWidth: false
 
                 implicitWidth: indicatorsRowLayout.implicitWidth + 10 * 2
                 implicitHeight: indicatorsRowLayout.implicitHeight + 5 * 2
 
                 buttonRadius: Appearance.rounding.full
-                colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
-                colBackgroundHover: Appearance.colors.colLayer1Hover
                 colRipple: Appearance.colors.colLayer1Active
                 colBackgroundToggled: Appearance.colors.colSecondaryContainer
                 colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
