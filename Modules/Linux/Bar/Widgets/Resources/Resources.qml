@@ -37,9 +37,7 @@ MouseArea {
         Resource {
             iconName: "planner_review"
             percentage: DgopService.cpuUsage
-            shown: Config.options.bar.resources.alwaysShowCpu || 
-                !(MprisService.activePlayer?.trackTitle?.length > 0) ||
-                root.alwaysShowAllResources
+            shown: Config.options.bar.resources.alwaysShowCpu || root.alwaysShowAllResources
             Layout.leftMargin: shown ? 6 : 0
             warningThreshold: Config.options.bar.resources.cpuWarningThreshold
         }

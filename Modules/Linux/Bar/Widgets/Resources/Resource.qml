@@ -57,7 +57,7 @@ Item {
 
             TextMetrics {
                 id: fullPercentageTextMetrics
-                text: "100"
+                text: "100%"
                 font.pixelSize: Appearance.font.pixelSize.small
             }
 
