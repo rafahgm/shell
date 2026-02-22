@@ -270,11 +270,7 @@ Item {
                             color: rightSidebarButton.colText
                         }
                     }
-                    XkbIndicator {
-                        Layout.alignment: Qt.AlignVCenter
-                        Layout.rightMargin: indicatorsRowLayout.realSpacing
-                        color: rightSidebarButton.colText
-                    }
+                    
                     Revealer {
                         reveal: NotificationsService.silent || NotificationsService.unread > 0
                         Layout.fillHeight: true
