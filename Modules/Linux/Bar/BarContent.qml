@@ -20,7 +20,11 @@ Item {
 
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: BrightnessService.getMonitorForScreen(screen)
-    property real useShortenedForm: screen?.width <= Appearance.sizes.barShortenScreenWidthThreshold 
+    property real useShortenedForm: screen?.width <= Appearance.sizes.barShortenScreenWidthThreshold
+
+    Component.onCompleted: {
+        console.log("screen", JSON.stringify(root.screen))
+    } 
 
     component VerticalBarSeparator: Rectangle {
         Layout.topMargin: Appearance.sizes.baseBarHeight / 3
@@ -45,7 +49,7 @@ Item {
         id: barBackground
         anchors {
             fill: parent
-            margins: Config.options.bar.cornerStyle === 1 ? (Appearance.sizes.hyprlandGapsOut) : 0 // idk why but +1 is needed
+            margins: Config.options.bar.cornerStyle === 1 ? (Appearance.sizes.gaps) : 0 // idk why but +1 is needed
         }
         color: Config.options.bar.showBackground ? Appearance.colors.colLayer0 : "transparent"
         radius: Config.options.bar.cornerStyle === 1 ? Appearance.rounding.windowRounding : 0

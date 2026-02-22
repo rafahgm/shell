@@ -76,7 +76,7 @@ Singleton {
             property JsonObject appearance: JsonObject {
                 property int borderRadius: 12
                 property int borderSize: 2
-                property int gaps: 4
+                property int gaps: 12
                 property bool extraBackgroundTint: true
                 property int fakeScreenRounding: 2 // 0: None | 1: Always | 2: When not fullscreen
                 property JsonObject fonts: JsonObject {
@@ -263,7 +263,7 @@ Singleton {
                     property int swapWarningThreshold: 85
                     property int cpuWarningThreshold: 90
                 }
-                property list<string> screenList: ["DP-1"] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
+                property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
                     property bool showColorPicker: true

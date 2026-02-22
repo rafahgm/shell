@@ -119,6 +119,16 @@ Scope {
                 id: columnLayout
                 anchors.horizontalCenter: parent.horizontalCenter
 
+                transformOrigin: Item.Top
+                scale: GlobalStates.osdVolumeOpen ? 1.0 : 0.96
+                opacity: GlobalStates.osdVolumeOpen ? 1.0 : 0.0
+                Behavior on scale {
+                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                }
+                Behavior on opacity {
+                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                }
+
                 Item {
                     id: osdValuesWrapper
                     // Extra space for shadow
