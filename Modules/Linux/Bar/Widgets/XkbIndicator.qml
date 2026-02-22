@@ -8,7 +8,7 @@ Loader {
     id: root
     property bool vertical: false
     property color color: Appearance.colors.colOnSurfaceVariant
-    active: XkbService.layoutCodes.length > 1
+    active: HyprlandXkbService.layoutCodes.length > 1
     visible: active
 
     function abbreviateLayoutCode(fullCode) {
@@ -26,7 +26,7 @@ Loader {
             id: layoutCodeText
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
-            text: abbreviateLayoutCode(XkbService.currentLayoutCode)
+            text: abbreviateLayoutCode(HyprlandXkbService.currentLayoutCode)
             font.pixelSize: text.includes("\n") ? Appearance.font.pixelSize.smallie : Appearance.font.pixelSize.small
             color: root.color
             animateChange: true

@@ -3,9 +3,9 @@ pragma ComponentBehavior: Bound
 
 // From https://github.com/caelestia-dots/shell with modifications.
 // License: GPLv3
-
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 import QtQuick
 
 import qs.Common
@@ -16,26 +16,26 @@ import qs.Common.Functions
  */
 Singleton {
     id: root
-    signal brightnessChanged
+    signal brightnessChanged()
 
     property var ddcMonitors: []
     readonly property list<BrightnessMonitor> monitors: Quickshell.screens.map(screen => monitorComp.createObject(root, {
-            screen
-        }))
+        screen
+    }))
 
     function getMonitorForScreen(screen: ShellScreen): var {
         return monitors.find(m => m.screen === screen);
     }
 
     function increaseBrightness(): void {
-        const focusedName = NiriService.currentOutput;
+        const focusedName = Hyprland.focusedMonitor.name;
         const monitor = monitors.find(m => focusedName === m.screen.name);
         if (monitor)
             monitor.setBrightness(monitor.brightness + 0.05);
     }
 
     function decreaseBrightness(): void {
-        const focusedName = NiriService.currentOutput;
+        const focusedName = Hyprland.focusedMonitor.name;
         const monitor = monitors.find(m => focusedName === m.screen.name);
         if (monitor)
             monitor.setBrightness(monitor.brightness - 0.05);
@@ -95,8 +95,7 @@ Singleton {
         property bool animateChanges: !monitor.isDdc
 
         onBrightnessChanged: {
-            if (!monitor.ready)
-                return;
+            if (!monitor.ready) return;
             root.brightnessChanged();
         }
 
@@ -109,10 +108,8 @@ Singleton {
             }
         }
         onMultipliedBrightnessChanged: {
-            if (monitor.animationEnabled)
-                syncBrightness();
-            else
-                setTimer.restart();
+            if (monitor.animationEnabled) syncBrightness();
+            else setTimer.restart();
         }
 
         function initialize() {
@@ -155,9 +152,8 @@ Singleton {
             } else {
                 const valuePercentNumber = Math.floor(brightnessValue * 100);
                 let valuePercent = `${valuePercentNumber}%`;
-                if (valuePercentNumber == 0)
-                    valuePercent = "1"; // Prevent fully black
-                setProc.exec(["brightnessctl", "--class", "backlight", "s", valuePercent, "--quiet"]);
+                if (valuePercentNumber == 0) valuePercent = "1"; // Prevent fully black
+                setProc.exec(["brightnessctl", "--class", "backlight", "s", valuePercent, "--quiet"])
             }
         }
 
@@ -196,15 +192,15 @@ Singleton {
             property string screenshotPath: `${root.screenshotDir}/screenshot-${screenName}.png`
             Connections {
                 enabled: Config.options.light.antiFlashbang.enable && Appearance.m3colors.darkmode
-                target: NiriService
-                function onActiveWindowChanged(event) {
-                    screenshotTimer.interval = root.contentSwitchDelay;
-                    screenshotTimer.restart();
-                }
-
-                function onFocusedWorkspaceIdChanged() {
-                    screenshotTimer.interval = root.workspaceAnimationDelay;
-                    screenshotTimer.restart();
+                target: Hyprland
+                function onRawEvent(event) {
+                    if (["activewindowv2", "windowtitlev2"].includes(event.name)) {
+                        screenshotTimer.interval = root.contentSwitchDelay;
+                        screenshotTimer.restart();
+                    } else if (["workspacev2"].includes(event.name)) {
+                        screenshotTimer.interval = root.workspaceAnimationDelay;
+                        screenshotTimer.restart();
+                    }
                 }
             }
 
@@ -219,14 +215,18 @@ Singleton {
 
             Process {
                 id: screenshotProc
-                command: ["bash", "-c", `mkdir -p '${StringUtils.shellSingleQuoteEscape(root.screenshotDir)}'` + ` && grim -o '${StringUtils.shellSingleQuoteEscape(screenScope.screenName)}' -` + ` | magick png:- -colorspace Gray -format "%[fx:mean*100]" info:`]
+                command: ["bash", "-c",
+                    `mkdir -p '${StringUtils.shellSingleQuoteEscape(root.screenshotDir)}'`
+                    + ` && grim -o '${StringUtils.shellSingleQuoteEscape(screenScope.screenName)}' -`
+                    + ` | magick png:- -colorspace Gray -format "%[fx:mean*100]" info:`
+                ]
                 stdout: StdioCollector {
                     id: lightnessCollector
                     onStreamFinished: {
                         Quickshell.execDetached(["rm", screenScope.screenshotPath]); // Cleanup
-                        const lightness = lightnessCollector.text;
-                        const newMultiplier = root.brightnessMultiplierForLightness(parseFloat(lightness));
-                        Brightness.getMonitorForScreen(screenScope.modelData).setBrightnessMultiplier(newMultiplier);
+                        const lightness = lightnessCollector.text
+                        const newMultiplier = root.brightnessMultiplierForLightness(parseFloat(lightness))
+                        Brightness.getMonitorForScreen(screenScope.modelData).setBrightnessMultiplier(newMultiplier)
                     }
                 }
             }
@@ -239,11 +239,23 @@ Singleton {
         target: "brightness"
 
         function increment() {
-            onPressed: root.increaseBrightness();
+            onPressed: root.increaseBrightness()
         }
 
         function decrement() {
-            onPressed: root.decreaseBrightness();
+            onPressed: root.decreaseBrightness()
         }
+    }
+
+    GlobalShortcut {
+        name: "brightnessIncrease"
+        description: "Increase brightness"
+        onPressed: root.increaseBrightness()
+    }
+
+    GlobalShortcut {
+        name: "brightnessDecrease"
+        description: "Decrease brightness"
+        onPressed: root.decreaseBrightness()
     }
 }

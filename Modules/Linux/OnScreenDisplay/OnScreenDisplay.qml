@@ -1,10 +1,10 @@
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Hyprland
 
 import qs.Services
 import qs.Common
@@ -13,7 +13,7 @@ import qs.Common.Widgets
 Scope {
     id: root
     property string protectionMessage: ""
-    property var focusedScreen: Quickshell.screens.find(s => s.name === NiriService.currentOutput)
+    property var focusedScreen: Quickshell.screens.find(s => s.name === Hyprland.focusedMonitor?.name)
 
     property string currentIndicator: "volume"
     property var indicators: [
@@ -119,16 +119,6 @@ Scope {
                 id: columnLayout
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                transformOrigin: Item.Top
-                scale: GlobalStates.osdVolumeOpen ? 1.0 : 0.96
-                opacity: GlobalStates.osdVolumeOpen ? 1.0 : 0.0
-                Behavior on scale {
-                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-                }
-                Behavior on opacity {
-                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                }
-
                 Item {
                     id: osdValuesWrapper
                     // Extra space for shadow
@@ -213,6 +203,22 @@ Scope {
 
         function toggle() {
             GlobalStates.osdVolumeOpen = !GlobalStates.osdVolumeOpen;
+        }
+    }
+    GlobalShortcut {
+        name: "osdVolumeTrigger"
+        description: "Triggers volume OSD on press"
+
+        onPressed: {
+            root.triggerOsd();
+        }
+    }
+    GlobalShortcut {
+        name: "osdVolumeHide"
+        description: "Hides volume OSD on press"
+
+        onPressed: {
+            GlobalStates.osdVolumeOpen = false;
         }
     }
 }

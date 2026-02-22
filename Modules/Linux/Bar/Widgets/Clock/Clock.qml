@@ -20,21 +20,22 @@ Item {
 
         StyledText {
             font.pixelSize: Appearance.font.pixelSize.large
-            font.family: Appearance.font.family.monospace
             color: Appearance.colors.colOnLayer1
             text: root.verbose ? DateTimeService.time : DateTimeService.shortTime
         }
 
         StyledText {
+            visible: root.verbose
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer1
             text: "•"
         }
 
         StyledText {
+            visible: root.verbose
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer1
-            text: root.verbose ? DateTimeService.longDate : DateTimeService.shortDate
+            text:  DateTimeService.longDate
         }
     }
 

@@ -32,7 +32,7 @@ Singleton {
         let y = 0.5768 * (x * x) - 0.759 * (x) + 0.2896
         return Math.max(0, Math.min(0.22, y)) - 0.12 * (m3colors.darkmode ? 0 : 1)
     }
-    property real autoContentTransparency: 0.9
+    property real autoContentTransparency: 0.3
     property real backgroundTransparency: Config?.options.appearance.transparency.enable ? Config?.options.appearance.transparency.automatic ? autoBackgroundTransparency : Config?.options.appearance.transparency.backgroundTransparency : 0
     property real contentTransparency: Config?.options.appearance.transparency.automatic ? autoContentTransparency : Config?.options.appearance.transparency.contentTransparency
 
@@ -376,15 +376,14 @@ Singleton {
     sizes: QtObject {
         property real baseBarHeight: 40
         property real barHeight: Config.options.bar.cornerStyle === Enums.CornerStyle.Float ? 
-            (baseBarHeight + root.sizes.gaps * 2) : baseBarHeight
-        property real barCenterSideModuleWidth: Config.options?.bar.verbose ? 360 : 140
-        property real barCenterSideModuleWidthShortened: 280
-        property real barCenterSideModuleWidthHellaShortened: 190
+            (baseBarHeight + root.sizes.gapsOut * 2) : baseBarHeight
+        property real barCenterSideModuleWidth: 360
+        property real barCenterSideModuleWidthShortened: 190
         property real barShortenScreenWidthThreshold: 1920 // Shorten if screen width is at most this value
         property real elevationMargin: 10
         property real fabShadowRadius: 5
         property real fabHoveredShadowRadius: 7
-        property real gaps: Config.options.appearance.gaps
+        property real gapsOut: Config.options.appearance.gapsOut
         property real mediaControlsWidth: 440
         property real mediaControlsHeight: 160
         property real notificationPopupWidth: 410
@@ -395,7 +394,7 @@ Singleton {
         property real sidebarWidthExtended: 750
         property real baseVerticalBarWidth: 46
         property real verticalBarWidth: Config.options.bar.cornerStyle === Enums.CornerStyle.Float ? 
-            (baseVerticalBarWidth + root.sizes.gaps * 2) : baseVerticalBarWidth
+            (baseVerticalBarWidth + root.sizes.gapsOut * 2) : baseVerticalBarWidth
         property real wallpaperSelectorWidth: 1200
         property real wallpaperSelectorHeight: 690
         property real wallpaperSelectorItemMargins: 8

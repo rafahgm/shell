@@ -74,9 +74,7 @@ Singleton {
             property var outputs: ({})
 
             property JsonObject appearance: JsonObject {
-                property int borderRadius: 12
-                property int borderSize: 2
-                property int gaps: 12
+                property int gapsOut: 5
                 property bool extraBackgroundTint: true
                 property int fakeScreenRounding: 2 // 0: None | 1: Always | 2: When not fullscreen
                 property JsonObject fonts: JsonObject {
@@ -257,8 +255,8 @@ Singleton {
                 property bool verbose: true
                 property bool vertical: false
                 property JsonObject resources: JsonObject {
-                    property bool alwaysShowSwap: true
-                    property bool alwaysShowCpu: true
+                    property bool alwaysShowSwap: false
+                    property bool alwaysShowCpu: false
                     property int memoryWarningThreshold: 95
                     property int swapWarningThreshold: 85
                     property int cpuWarningThreshold: 90
@@ -392,10 +390,5 @@ Singleton {
                 property int timeout: 1000
             }
         }
-    }
-
-    function getNiriOutputSettings(outputId) {
-        const settings = options?.outputs[outputId];
-        return settings ? JSON.parse(JSON.stringify(settings)) : {};
     }
 }

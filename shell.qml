@@ -21,7 +21,6 @@ ShellRoot {
 
     Component.onCompleted: {
         ConflictKiller.load()
-        NiriService.generateNiriLayoutConfig()
     }
 
     property list<string> families: ["linux", "windows"]

@@ -20,11 +20,7 @@ Item {
 
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: BrightnessService.getMonitorForScreen(screen)
-    property real useShortenedForm: screen?.width <= Appearance.sizes.barShortenScreenWidthThreshold
-
-    Component.onCompleted: {
-        console.log("screen", JSON.stringify(root.screen))
-    } 
+    property real verbose: screen?.width > Appearance.sizes.barShortenScreenWidthThreshold
 
     component VerticalBarSeparator: Rectangle {
         Layout.topMargin: Appearance.sizes.baseBarHeight / 3
@@ -49,7 +45,7 @@ Item {
         id: barBackground
         anchors {
             fill: parent
-            margins: Config.options.bar.cornerStyle === 1 ? (Appearance.sizes.gaps) : 0 // idk why but +1 is needed
+            margins: Config.options.bar.cornerStyle === 1 ? (Appearance.sizes.gapsOut) : 0 // idk why but +1 is needed
         }
         color: Config.options.bar.showBackground ? Appearance.colors.colLayer0 : "transparent"
         radius: Config.options.bar.cornerStyle === 1 ? Appearance.rounding.windowRounding : 0
@@ -100,6 +96,7 @@ Item {
             }
 
             ActiveWindow {
+                visible: root.verbose
                 Layout.leftMargin: 10 + (leftSidebarButton.visible ? 0 : Appearance.rounding.screenRounding)
                 Layout.rightMargin: Appearance.rounding.screenRounding
                 Layout.fillWidth: true
@@ -118,12 +115,11 @@ Item {
 
         BarGroup {
             id: leftCenterGroup
-
             anchors.verticalCenter: parent.verticalCenter
 
             Resources {
-                alwaysShowAllResources: !root.useShortenedForm
-                Layout.fillWidth: !root.useShortenedForm
+                alwaysShowAllResources: root.verbose
+                Layout.fillWidth: root.verbose
             }
 
             Media {
@@ -174,14 +170,16 @@ Item {
 
             BarGroup {
                 id: rightCenterGroupContent
+                anchors.fill: parent
 
                 Clock {
-                    verbose: !root.useShortenedForm
+                    verbose: root.verbose
                     Layout.alignment: Qt.AlignVCenter
                     Layout.fillWidth: true
                 }
 
                 UtilButtons {
+                    visible: root.verbose
                     Layout.alignment: Qt.AlignVCenter
                 }
 
@@ -193,7 +191,7 @@ Item {
         }
     }
 
-        FocusedMouseScrollArea { // Right side | scroll to change volume
+    FocusedMouseScrollArea { // Right side | scroll to change volume
         id: barRightSideMouseArea
 
         anchors {
@@ -205,9 +203,9 @@ Item {
         implicitWidth: rightSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
 
-        onScrollDown: AudioService.decrementVolume();
-        onScrollUp: AudioService.incrementVolume();
-        onMovedAway: GlobalStates.osdVolumeOpen = false;
+        onScrollDown: AudioService.decrementVolume()
+        onScrollUp: AudioService.incrementVolume()
+        onMovedAway: GlobalStates.osdVolumeOpen = false
 
         // Visual content
         ScrollHint {

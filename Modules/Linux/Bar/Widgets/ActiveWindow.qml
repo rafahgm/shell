@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 
 import qs.Services
 import qs.Common
@@ -9,53 +10,32 @@ import qs.Common.Widgets
 
 Item {
     id: root
-
+    readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window?.screen)
     readonly property Toplevel activeWindow: ToplevelManager.activeToplevel
 
-    property var niriFocusedWindow: {
-        const wins = NiriService.windows
-        for (var i = 0; i < wins.length; ++i) {
-            const w = wins[i]
-            if (w && w.is_focused)
-                return w
-        }
-        return null
-    }
+    property string activeWindowAddress: `0x${activeWindow?.HyprlandToplevel?.address}`
+    property bool focusingThisMonitor: HyprlandDataService.activeWorkspace?.monitor == monitor?.name
+    property var biggestWindow: HyprlandDataService.biggestWindowForWorkspace(HyprlandDataService.monitors[root.monitor?.id]?.activeWorkspace.id)
 
-    property string displayAppName: {
-        const w = niriFocusedWindow;
-        if (w) {
-            const base = w.app_id || w.appId || TranslationService.tr("Desktop");
-            return shortenText(base, 40);
-        }
-        return TranslationService.tr("Desktop");
-    }
-
-    property string displayTitle: {
-        const w = niriFocusedWindow;
-        if (w && w.title) {
-            return shortenText(w.title, 80);
-        }
-        const wsNum = NiriService.getCurrentWorkspaceNumber();
-        return shortenText(`${TranslationService.tr("Workspace")} ${wsNum}`, 80);  
-    }
-
-    implicitWidth: col.implicitWidth
+    implicitWidth: colLayout.implicitWidth
 
     ColumnLayout {
-        id: col
+        id: colLayout
 
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: -1
+        spacing: -4
 
         StyledText {
             Layout.fillWidth: true
             font.pixelSize: Appearance.font.pixelSize.smaller
             color: Appearance.colors.colSubtext
             elide: Text.ElideRight
-            text: root.displayAppName
+            text: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
+                root.activeWindow?.appId :
+                (root.biggestWindow?.class) ?? TranslationService.tr("Desktop")
+
         }
 
         StyledText {
@@ -63,16 +43,11 @@ Item {
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer0
             elide: Text.ElideRight
-            text: root.displayTitle
+            text: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
+                root.activeWindow?.title :
+                (root.biggestWindow?.title) ?? `${TranslationService.tr("Workspace")} ${monitor?.activeWorkspace?.id ?? 1}`
         }
+
     }
 
-    function shortenText(str, maxLen) {
-        if (!str)
-            return "";
-        const s = str.toString();
-        if (s.length <= maxLen)
-            return s;
-        return s.slice(0, maxLen - 3) + "...";
-    }
 }

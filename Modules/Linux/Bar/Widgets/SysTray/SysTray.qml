@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Services.SystemTray
 
 import qs.Services
@@ -9,9 +10,6 @@ import qs.Common.Widgets
 
 Item {
     id: root
-
-    signal closeAllTrayMenus
-
     implicitWidth: gridLayout.implicitWidth
     implicitHeight: gridLayout.implicitHeight
     property bool vertical: false
@@ -21,12 +19,46 @@ Item {
     property bool showOverflowMenu: true
     property var activeMenu: null
 
-    property bool invertPins: Config.options.tray.invertPinnedItems
     property list<var> pinnedItems: TrayService.pinnedItems
     property list<var> unpinnedItems: TrayService.unpinnedItems
+    onUnpinnedItemsChanged: {
+        if (unpinnedItems.length == 0) root.closeOverflowMenu();
+    }
+
+    function grabFocus() {
+        focusGrab.active = true;
+    }
 
     function setExtraWindowAndGrabFocus(window) {
         root.activeMenu = window;
+        root.grabFocus();
+    }
+
+    function releaseFocus() {
+        focusGrab.active = false;
+    }
+
+    function closeOverflowMenu() {
+        focusGrab.active = false;
+    }
+
+    onTrayOverflowOpenChanged: {
+        if (root.trayOverflowOpen) {
+            root.grabFocus();
+        }
+    }
+
+    HyprlandFocusGrab {
+        id: focusGrab
+        active: false
+        windows: [trayOverflowLayout.QsWindow?.window, root.activeMenu]
+        onCleared: {
+            root.trayOverflowOpen = false;
+            if (root.activeMenu) {
+                root.activeMenu.close();
+                root.activeMenu = null;
+            }
+        }
     }
 
     GridLayout {
@@ -85,7 +117,8 @@ Item {
                             item: modelData
                             Layout.fillHeight: !root.vertical
                             Layout.fillWidth: root.vertical
-                            onMenuOpened: qsWindow => root.setExtraWindowAndGrabFocus(qsWindow)
+                            onMenuClosed: root.releaseFocus();
+                            onMenuOpened: (qsWindow) => root.setExtraWindowAndGrabFocus(qsWindow);
                         }
                     }
                 }
@@ -102,8 +135,8 @@ Item {
                 item: modelData
                 Layout.fillHeight: !root.vertical
                 Layout.fillWidth: root.vertical
-                onMenuClosed: root.releaseFocus()
-                onMenuOpened: qsWindow => {
+                onMenuClosed: root.releaseFocus();
+                onMenuOpened: (qsWindow) => {
                     root.setExtraWindowAndGrabFocus(qsWindow);
                 }
             }

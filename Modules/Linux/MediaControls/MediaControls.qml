@@ -1,10 +1,12 @@
 pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
 import Quickshell.Wayland
+import Quickshell.Hyprland
 
 import qs.Services
 import qs.Common
@@ -17,9 +19,10 @@ Scope {
     readonly property MprisPlayer activePlayer: MprisService.activePlayer
     readonly property var realPlayers: MprisService.players
     readonly property var meaningfulPlayers: filterDuplicatePlayers(realPlayers)
+    readonly property real osdWidth: Appearance.sizes.osdWidth
     readonly property real widgetWidth: Appearance.sizes.mediaControlsWidth
     readonly property real widgetHeight: Appearance.sizes.mediaControlsHeight
-    property real popupRounding: Appearance.rounding.screenRounding
+    property real popupRounding: Appearance.rounding.screenRounding - Appearance.sizes.gapsOut + 1
     property list<real> visualizerPoints: []
 
     function filterDuplicatePlayers(players) {
@@ -72,26 +75,9 @@ Scope {
     Loader {
         id: mediaControlsLoader
         active: GlobalStates.mediaControlsOpen
-
-        Timer {
-            id: closingTimer
-            interval: 350
-            repeat: false
-            onTriggered: {
-                if (!GlobalStates.mediaControlsOpen)
-                    mediaControlsLoader.active = false;
-            }
-        }
-
-        Connections {
-            target: GlobalStates
-            function onMediaControlsOpenChanged() {
-                if (GlobalStates.mediaControlsOpen) {
-                    mediaControlsLoader.active = true;
-                    closingTimer.stop();
-                } else {
-                    closingTimer.restart();
-                }
+        onActiveChanged: {
+            if (!mediaControlsLoader.active && root.realPlayers.length === 0) {
+                GlobalStates.mediaControlsOpen = false;
             }
         }
 
@@ -101,169 +87,100 @@ Scope {
 
             exclusionMode: ExclusionMode.Ignore
             exclusiveZone: 0
+            implicitWidth: root.widgetWidth
+            implicitHeight: playerColumnLayout.implicitHeight
             color: "transparent"
             WlrLayershell.namespace: "quickshell:mediaControls"
-            WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: GlobalStates.mediaControlsOpen ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-            anchors.top: true
-            anchors.bottom: true
-            anchors.left: true
-            anchors.right: true
+            anchors {
+                top: !Config.options.bar.bottom || Config.options.bar.vertical
+                bottom: Config.options.bar.bottom && !Config.options.bar.vertical
+                left: !(Config.options.bar.vertical && Config.options.bar.bottom)
+                right: Config.options.bar.vertical && Config.options.bar.bottom
+            }
+            margins {
+                top: Config.options.bar.vertical ? ((panelWindow.screen.height / 2) - widgetHeight * 1.5) : Appearance.sizes.barHeight
+                bottom: Appearance.sizes.barHeight
+                left: Config.options.bar.vertical ? Appearance.sizes.barHeight : ((panelWindow.screen.width / 2) - (osdWidth / 2) - widgetWidth)
+                right: Appearance.sizes.barHeight
+            }
 
-            FocusScope {
-                id: inputScope
+            mask: Region {
+                item: playerColumnLayout
+            }
+
+            Component.onCompleted: {
+                GlobalFocusService.addDismissable(panelWindow);
+            }
+            Component.onDestruction: {
+                GlobalFocusService.removeDismissable(panelWindow);
+            }
+            Connections {
+                target: GlobalFocusService
+                function onDismissed() {
+                    GlobalStates.mediaControlsOpen = false;
+                }
+            }
+
+            ColumnLayout {
+                id: playerColumnLayout
                 anchors.fill: parent
-                focus: true
+                spacing: -Appearance.sizes.elevationMargin // Shadow overlap okay
 
-                Component.onCompleted: focusTimer.start()
-
-                Timer {
-                    id: focusTimer
-                    interval: 100
-                    repeat: false
-                    onTriggered: {
-                        inputScope.forceActiveFocus();
+                Repeater {
+                    model: ScriptModel {
+                        values: root.meaningfulPlayers
+                    }
+                    delegate: PlayerControl {
+                        required property MprisPlayer modelData
+                        player: modelData
+                        visualizerPoints: root.visualizerPoints
+                        implicitWidth: root.widgetWidth
+                        implicitHeight: root.widgetHeight
+                        radius: root.popupRounding
                     }
                 }
 
-                Keys.onSpacePressed: {
-                    if (root.activePlayer?.canTogglePlaying) {
-                        root.activePlayer.togglePlaying();
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: GlobalStates.mediaControlsOpen = false
-                }
                 Item {
-                    id: cardArea
+                    // No player placeholder
+                    Layout.alignment: {
+                        if (panelWindow.anchors.left)
+                            return Qt.AlignLeft;
+                        if (panelWindow.anchors.right)
+                            return Qt.AlignRight;
+                        return Qt.AlignHCenter;
+                    }
+                    Layout.leftMargin: Appearance.sizes.gapsOut
+                    Layout.rightMargin: Appearance.sizes.gapsOut
+                    visible: root.meaningfulPlayers.length === 0
+                    implicitWidth: placeholderBackground.implicitWidth + Appearance.sizes.elevationMargin
+                    implicitHeight: placeholderBackground.implicitHeight + Appearance.sizes.elevationMargin
 
-                    readonly property real screenH: panelWindow.screen?.height ?? 1080
-
-                    width: root.widgetWidth
-                    height: playerColumnLayout.implicitHeight
-
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    y: 0
-                    opacity: 0
-                    scale: 0.9
-                    transformOrigin: Item.Bottom
-
-                    states: State {
-                        name: "visible"
-                        when: GlobalStates.mediaControlsOpen
-                        PropertyChanges {
-                            target: cardArea
-                            y: Appearance.sizes.barHeight
-                            opacity: 1
-                            scale: 1
-                        }
+                    StyledRectangularShadow {
+                        target: placeholderBackground
                     }
 
-                    transitions: [
-                        Transition {
-                            to: "visible"
-                            NumberAnimation {
-                                properties: "y"
-                                duration: 350
-                                easing.type: Easing.OutQuint
-                            }
-                            NumberAnimation {
-                                properties: "opacity"
-                                duration: 250
-                                easing.type: Easing.OutCubic
-                            }
-                            NumberAnimation {
-                                properties: "scale"
-                                duration: 350
-                                easing.type: Easing.OutBack
-                                easing.overshoot: 1.2
-                            }
-                        },
-                        Transition {
-                            from: "visible"
-                            NumberAnimation {
-                                properties: "y"
-                                duration: 250
-                                easing.type: Easing.InQuint
-                            }
-                            NumberAnimation {
-                                properties: "opacity"
-                                duration: 200
-                                easing.type: Easing.InCubic
-                            }
-                            NumberAnimation {
-                                properties: "scale"
-                                duration: 250
-                                easing.type: Easing.InBack
-                                easing.overshoot: 1.0
-                            }
-                        }
-                    ]
+                    Rectangle {
+                        id: placeholderBackground
+                        anchors.centerIn: parent
+                        color: Appearance.colors.colLayer0
+                        radius: root.popupRounding
+                        property real padding: 20
+                        implicitWidth: placeholderLayout.implicitWidth + padding * 2
+                        implicitHeight: placeholderLayout.implicitHeight + padding * 2
 
-                    ColumnLayout {
-                        id: playerColumnLayout
-                        spacing: -Appearance.sizes.elevationMargin // Shadow overlap okay
+                        ColumnLayout {
+                            id: placeholderLayout
+                            anchors.centerIn: parent
 
-                        Repeater {
-                            model: ScriptModel {
-                                values: root.meaningfulPlayers
+                            StyledText {
+                                text: TranslationService.tr("No active player")
+                                font.pixelSize: Appearance.font.pixelSize.large
                             }
-                            delegate: PlayerControl {
-                                required property MprisPlayer modelData
-                                player: modelData
-                                visualizerPoints: root.visualizerPoints
-                                implicitWidth: root.widgetWidth
-                                implicitHeight: root.widgetHeight
-                                radius: root.popupRounding
-                            }
-                        }
-
-                        Item {
-                            // No player placeholder
-                            Layout.alignment: {
-                                if (panelWindow.anchors.left)
-                                    return Qt.AlignLeft;
-                                if (panelWindow.anchors.right)
-                                    return Qt.AlignRight;
-                                return Qt.AlignHCenter;
-                            }
-                            Layout.leftMargin: Appearance.sizes.gaps
-                            Layout.rightMargin: Appearance.sizes.gaps
-                            visible: root.meaningfulPlayers.length === 0
-                            implicitWidth: placeholderBackground.implicitWidth + Appearance.sizes.elevationMargin
-                            implicitHeight: placeholderBackground.implicitHeight + Appearance.sizes.elevationMargin
-
-                            StyledRectangularShadow {
-                                target: placeholderBackground
-                            }
-
-                            Rectangle {
-                                id: placeholderBackground
-                                anchors.centerIn: parent
-                                color: Appearance.colors.colLayer0
-                                radius: root.popupRounding
-                                property real padding: 20
-                                implicitWidth: placeholderLayout.implicitWidth + padding * 2
-                                implicitHeight: placeholderLayout.implicitHeight + padding * 2
-
-                                ColumnLayout {
-                                    id: placeholderLayout
-                                    anchors.centerIn: parent
-
-                                    StyledText {
-                                        text: TranslationService.tr("No active player")
-                                        font.pixelSize: Appearance.font.pixelSize.large
-                                    }
-                                    StyledText {
-                                        color: Appearance.colors.colSubtext
-                                        text: TranslationService.tr("Make sure your player has MPRIS support\nor try turning off duplicate player filtering")
-                                        font.pixelSize: Appearance.font.pixelSize.small
-                                    }
-                                }
+                            StyledText {
+                                color: Appearance.colors.colSubtext
+                                text: TranslationService.tr("Make sure your player has MPRIS support\nor try turning off duplicate player filtering")
+                                font.pixelSize: Appearance.font.pixelSize.small
                             }
                         }
                     }
@@ -276,18 +193,43 @@ Scope {
         target: "mediaControls"
 
         function toggle(): void {
-            GlobalStates.mediaControlsOpen = !GlobalStates.mediaControlsOpen;
-            if (GlobalStates.mediaControlsOpen)
+            mediaControlsLoader.active = !mediaControlsLoader.active;
+            if (mediaControlsLoader.active)
                 NotificationsService.timeoutAll();
         }
 
         function close(): void {
-            GlobalStates.mediaControlsOpen = false;
+            mediaControlsLoader.active = false;
         }
 
         function open(): void {
-            GlobalStates.mediaControlsOpen = true;
+            mediaControlsLoader.active = true;
             NotificationsService.timeoutAll();
+        }
+    }
+
+    GlobalShortcut {
+        name: "mediaControlsToggle"
+        description: "Toggles media controls on press"
+
+        onPressed: {
+            GlobalStates.mediaControlsOpen = !GlobalStates.mediaControlsOpen;
+        }
+    }
+    GlobalShortcut {
+        name: "mediaControlsOpen"
+        description: "Opens media controls on press"
+
+        onPressed: {
+            GlobalStates.mediaControlsOpen = true;
+        }
+    }
+    GlobalShortcut {
+        name: "mediaControlsClose"
+        description: "Closes media controls on press"
+
+        onPressed: {
+            GlobalStates.mediaControlsOpen = false;
         }
     }
 }

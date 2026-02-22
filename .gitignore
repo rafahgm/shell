@@ -94,3 +94,7 @@ Thumbs.db
 .kilocode/
 
 .qmlls.ini
+
+.SRCINFO
+*.pkg.tar.zst
+*.tar.xz

@@ -3,9 +3,9 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 import qs.Common
-import qs.Services
 
 /**
  * Exposes the active Hyprland Xkb keyboard layout name and code for indicators.
@@ -29,12 +29,6 @@ Singleton {
         } else {
             getLayoutProc.running = true;
         }
-    }
-
-    function syncFromNiri() {
-        const names = NiriService.keyboardLayoutNames || [];
-        root.layoutCodes = names;
-        root.currentLayoutName = NiriService.getCurrentKeyboardLayoutName();
     }
 
     // Get the layout code from the base.lst file by grabbing the line with the current layout name
@@ -79,13 +73,48 @@ Singleton {
         }
     }
 
-    Connections {
-        target: NiriService
-        function onKeyboardLayoutNamesChanged() { root.syncFromNiri(); }
-        function onCurrentKeyboardLayoutIndexChanged() { root.syncFromNiri(); }
+    // Find out available layouts and current active layout. Should only be necessary on init
+    Process {
+        id: fetchLayoutsProc
+        running: true
+        command: ["hyprctl", "-j", "devices"]
+
+        stdout: StdioCollector {
+            id: devicesCollector
+            onStreamFinished: {
+                const parsedOutput = JSON.parse(devicesCollector.text);
+                const hyprlandKeyboard = parsedOutput["keyboards"].find(kb => kb.main === true);
+                root.layoutCodes = hyprlandKeyboard["layout"].split(",");
+                root.currentLayoutName = hyprlandKeyboard["active_keymap"];
+                // console.log("[HyprlandXkb] Fetched | Layouts (multiple: " + (root.layoutCodes.length > 1) + "): "
+                //     + root.layoutCodes.join(", ") + " | Active: " + root.currentLayoutName);
+            }
+        }
     }
 
-    Component.onCompleted: {
-        root.syncFromNiri();
+    // Update the layout name when it changes
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "activelayout") {
+                if (root.needsLayoutRefresh) {
+                    root.needsLayoutRefresh = false;
+                    fetchLayoutsProc.running = true;
+                }
+
+                // If there's only one layout, the updated layout is always the same
+                if (root.layoutCodes.length <= 1) return;
+
+                // Update when layout might have changed
+                const dataString = event.data;
+                root.currentLayoutName = dataString.substring(dataString.indexOf(",") + 1);
+
+                // Update layout for on-screen keyboard (osk)
+                Config.options.osk.layout = root.currentLayoutName.split(" (")[0];
+            } else if (event.name == "configreloaded") {
+                // Mark layout code list to be updated when config is reloaded
+                root.needsLayoutRefresh = true;
+            }
+        }
     }
 }
