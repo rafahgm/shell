@@ -18,8 +18,10 @@ Scope {
         model: {
             const screens = Quickshell.screens;
             const list = Config.options.bar.screenList;
+            
             if (!list || list.length === 0)
                 return screens;
+
             return screens.filter(s => list.includes(s.name));
         }
         LazyLoader {
@@ -35,8 +37,7 @@ Scope {
 
                 screen: barLoader.modelData
                 exclusionMode: ExclusionMode.Ignore
-                exclusiveZone: (Config?.options.bar.autoHide.enable && (!mustShow || !Config?.options.bar.autoHide.pushWindows)) ? 0 :
-                    Appearance.sizes.baseBarHeight + (Config.options.bar.cornerStyle === 1 ? Appearance.sizes.gapsOut : 0)
+                exclusiveZone: (Config?.options.bar.autoHide.enable && (!mustShow || !Config?.options.bar.autoHide.pushWindows)) ? 0 : Appearance.sizes.baseBarHeight + (Config.options.bar.cornerStyle === 1 ? Appearance.sizes.gapsOut : 0)
                 WlrLayershell.namespace: "shell:bar"
                 implicitHeight: Appearance.sizes.barHeight + Appearance.rounding.screenRounding
                 mask: Region {
