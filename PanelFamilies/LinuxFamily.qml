@@ -6,6 +6,7 @@ import qs.Modules.Linux.Bar
 import qs.Modules.Linux.Notifications
 import qs.Modules.Linux.MediaControls
 import qs.Modules.Linux.OnScreenDisplay
+import qs.Modules.Linux.Polkit
 
 Scope {
     PanelLoader {
@@ -20,5 +21,8 @@ Scope {
     }
     PanelLoader {
         component: OnScreenDisplay {}
+    }
+     PanelLoader {
+        component: Polkit {}
     }
 }
