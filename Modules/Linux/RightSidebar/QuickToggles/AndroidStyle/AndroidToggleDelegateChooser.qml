@@ -24,7 +24,7 @@ DelegateChooser {
 
     role: "type"
 
-    /* DelegateChoice {
+    DelegateChoice {
         roleValue: "antiFlashbang"
         AndroidAntiFlashbangToggle {
             required property int index
@@ -42,7 +42,7 @@ DelegateChooser {
             }
         }
     }
-
+    /*
     DelegateChoice {
         roleValue: "audio"
         AndroidAudioToggle {
@@ -211,7 +211,7 @@ DelegateChooser {
             cellSize: modelData.size
         }
     }
-
+*/
     DelegateChoice {
         roleValue: "network"
         AndroidNetworkToggle {
@@ -230,7 +230,7 @@ DelegateChooser {
             }
         }
     }
-
+/*
     DelegateChoice {
         roleValue: "nightLight"
         AndroidNightLightToggle {

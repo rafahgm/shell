@@ -98,6 +98,76 @@ Singleton {
                 }
             }
 
+            property JsonObject sidebar: JsonObject {
+                property bool keepRightSidebarLoaded: true
+                property JsonObject translator: JsonObject {
+                    property bool enable: false
+                    property int delay: 300 // Delay before sending request. Reduces (potential) rate limits and lag.
+                }
+                property JsonObject ai: JsonObject {
+                    property bool textFadeIn: false
+                }
+                property JsonObject booru: JsonObject {
+                    property bool allowNsfw: false
+                    property string defaultProvider: "yandere"
+                    property int limit: 20
+                    property JsonObject zerochan: JsonObject {
+                        property string username: "[unset]"
+                    }
+                }
+                property JsonObject cornerOpen: JsonObject {
+                    property bool enable: true
+                    property bool bottom: false
+                    property bool valueScroll: true
+                    property bool clickless: false
+                    property int cornerRegionWidth: 250
+                    property int cornerRegionHeight: 5
+                    property bool visualize: false
+                    property bool clicklessCornerEnd: true
+                    property int clicklessCornerVerticalOffset: 1
+                }
+
+                property JsonObject quickToggles: JsonObject {
+                    property string style: "android" // Options: classic, android
+                    property JsonObject android: JsonObject {
+                        property int columns: 5
+                        property list<var> toggles: [
+                            {
+                                "size": 2,
+                                "type": "network"
+                            },
+                            {
+                                "size": 2,
+                                "type": "bluetooth"
+                            },
+                            {
+                                "size": 1,
+                                "type": "idleInhibitor"
+                            },
+                            {
+                                "size": 1,
+                                "type": "mic"
+                            },
+                            {
+                                "size": 2,
+                                "type": "audio"
+                            },
+                            {
+                                "size": 2,
+                                "type": "nightLight"
+                            }
+                        ]
+                    }
+                }
+
+                property JsonObject quickSliders: JsonObject {
+                    property bool enable: false
+                    property bool showMic: false
+                    property bool showVolume: true
+                    property bool showBrightness: true
+                }
+            }
+
             property JsonObject light: JsonObject {
                 property JsonObject night: JsonObject {
                     property bool automatic: true
@@ -305,76 +375,6 @@ Singleton {
                 property string theme: "freedesktop"
                 property bool notifications: true
                 property real volume: 1
-            }
-
-            property JsonObject sidebar: JsonObject {
-                property bool keepRightSidebarLoaded: true
-                property JsonObject translator: JsonObject {
-                    property bool enable: false
-                    property int delay: 300 // Delay before sending request. Reduces (potential) rate limits and lag.
-                }
-                property JsonObject ai: JsonObject {
-                    property bool textFadeIn: false
-                }
-                property JsonObject booru: JsonObject {
-                    property bool allowNsfw: false
-                    property string defaultProvider: "yandere"
-                    property int limit: 20
-                    property JsonObject zerochan: JsonObject {
-                        property string username: "[unset]"
-                    }
-                }
-                property JsonObject cornerOpen: JsonObject {
-                    property bool enable: true
-                    property bool bottom: false
-                    property bool valueScroll: true
-                    property bool clickless: false
-                    property int cornerRegionWidth: 250
-                    property int cornerRegionHeight: 5
-                    property bool visualize: false
-                    property bool clicklessCornerEnd: true
-                    property int clicklessCornerVerticalOffset: 1
-                }
-
-                property JsonObject quickToggles: JsonObject {
-                    property string style: "android" // Options: classic, android
-                    property JsonObject android: JsonObject {
-                        property int columns: 5
-                        property list<var> toggles: [
-                            {
-                                "size": 2,
-                                "type": "network"
-                            },
-                            {
-                                "size": 2,
-                                "type": "bluetooth"
-                            },
-                            {
-                                "size": 1,
-                                "type": "idleInhibitor"
-                            },
-                            {
-                                "size": 1,
-                                "type": "mic"
-                            },
-                            {
-                                "size": 2,
-                                "type": "audio"
-                            },
-                            {
-                                "size": 2,
-                                "type": "nightLight"
-                            }
-                        ]
-                    }
-                }
-
-                property JsonObject quickSliders: JsonObject {
-                    property bool enable: false
-                    property bool showMic: false
-                    property bool showVolume: true
-                    property bool showBrightness: true
-                }
             }
 
             property JsonObject notifications: JsonObject {
