@@ -7,6 +7,7 @@ import qs.Modules.Linux.Notifications
 import qs.Modules.Linux.MediaControls
 import qs.Modules.Linux.OnScreenDisplay
 import qs.Modules.Linux.Polkit
+import qs.Modules.Linux.RightSidebar
 
 Scope {
     PanelLoader {
@@ -22,7 +23,10 @@ Scope {
     PanelLoader {
         component: OnScreenDisplay {}
     }
-     PanelLoader {
+    PanelLoader {
         component: Polkit {}
+    }
+    PanelLoader {
+        component: RightSidebar {}
     }
 }
