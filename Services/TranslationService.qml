@@ -35,7 +35,7 @@ Singleton {
     }
 
     onLanguageCodeChanged: {
-        print("[Translation] Language changed to", root.languageCode);
+        print("[TranslationService] Language changed to", root.languageCode);
         translationFileView.languageCode = root.languageCode;
         translationFileView.reread();
     }
@@ -110,7 +110,7 @@ Singleton {
                 var jsonData = JSON.parse(textContent);
                 translationReader.contentLoaded(jsonData);
             } catch (e) {
-                console.log("[Translation] Failed to load translations:", e);
+                console.log("[TranslationService] Failed to load translations:", e);
                 translationReader.contentLoaded({});
             }
         }

@@ -10,6 +10,7 @@ import qs.Common
 import qs.Common.Widgets
 import qs.Modules.Linux.RightSidebar.QuickToggles
 import qs.Modules.Linux.RightSidebar.QuickToggles.ClassicStyle
+import qs.Modules.Linux.RightSidebar.VolumeMixer
 
 Item {
     id: root
@@ -70,9 +71,11 @@ Item {
                 Layout.fillWidth: true
                 visible: active
                 active: {
-                    const configQuickSliders = Config.options.sidebar.quickSliders
-                    if (!configQuickSliders.enable) return false
-                    if (!configQuickSliders.showMic && !configQuickSliders.showVolume && !configQuickSliders.showBrightness) return false;
+                    const configQuickSliders = Config.options.sidebar.quickSliders;
+                    if (!configQuickSliders.enable)
+                        return false;
+                    if (!configQuickSliders.showMic && !configQuickSliders.showVolume && !configQuickSliders.showBrightness)
+                        return false;
                     return true;
                 }
                 sourceComponent: QuickSliders {}
@@ -112,7 +115,8 @@ Item {
         readonly property bool shown: root[shownPropertyString]
         anchors.fill: parent
 
-        onShownChanged: if (shown) toggleDialogLoader.active = true;
+        onShownChanged: if (shown)
+            toggleDialogLoader.active = true
         active: shown
         onActiveChanged: {
             if (active) {
@@ -123,12 +127,27 @@ Item {
         Connections {
             target: toggleDialogLoader.item
             function onDismiss() {
-                toggleDialogLoader.item.show = false
+                toggleDialogLoader.item.show = false;
                 root[toggleDialogLoader.shownPropertyString] = false;
             }
             function onVisibleChanged() {
-                if (!toggleDialogLoader.item.visible && !root[toggleDialogLoader.shownPropertyString]) toggleDialogLoader.active = false;
+                if (!toggleDialogLoader.item.visible && !root[toggleDialogLoader.shownPropertyString])
+                    toggleDialogLoader.active = false;
             }
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showAudioOutputDialog"
+        dialog: VolumeDialog {
+            isSink: true
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showAudioInputDialog"
+        dialog: VolumeDialog {
+            isSink: false
         }
     }
 
@@ -173,7 +192,7 @@ Item {
             radius: height / 2
             implicitWidth: uptimeRow.implicitWidth + 24
             implicitHeight: uptimeRow.implicitHeight + 8
-            
+
             Row {
                 id: uptimeRow
                 anchors.centerIn: parent

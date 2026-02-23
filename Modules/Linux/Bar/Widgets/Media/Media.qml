@@ -18,10 +18,10 @@ Item {
     implicitHeight: Appearance.sizes.barHeight
 
     Timer {
-        running: activePlayer?.playbackState == MprisPlaybackState.Playing
+        running: root.activePlayer?.playbackState == MprisPlaybackState.Playing
         interval: Config.options.resources.updateInterval
         repeat: true
-        onTriggered: activePlayer.positionChanged()
+        onTriggered: root.activePlayer.positionChanged()
     }
 
     MouseArea {
@@ -29,11 +29,11 @@ Item {
         acceptedButtons: Qt.MiddleButton | Qt.BackButton | Qt.ForwardButton | Qt.RightButton | Qt.LeftButton
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
-                activePlayer.togglePlaying();
+                root.activePlayer.togglePlaying();
             } else if (event.button === Qt.BackButton) {
-                activePlayer.previous();
+                root.activePlayer.previous();
             } else if (event.button === Qt.ForwardButton || event.button === Qt.RightButton) {
-                activePlayer.next();
+                root.activePlayer.next();
             }
         }
     }
@@ -48,7 +48,7 @@ Item {
             id: mediaCircProg
             Layout.alignment: Qt.AlignVCenter
             lineWidth: Appearance.rounding.unsharpen
-            value: activePlayer?.position / activePlayer?.length
+            value: root.activePlayer?.position / root.activePlayer?.length
             implicitSize: 20
             colPrimary: Appearance.colors.colOnSecondaryContainer
             enableAnimation: false
@@ -61,7 +61,7 @@ Item {
                 MaterialSymbol {
                     anchors.centerIn: parent
                     fill: 1
-                    text: activePlayer?.isPlaying ? "pause" : "music_note"
+                    text: root.activePlayer?.isPlaying ? "pause" : "music_note"
                     iconSize: Appearance.font.pixelSize.normal
                     color: Appearance.m3colors.m3onSecondaryContainer
                 }
@@ -77,7 +77,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             elide: Text.ElideRight // Truncates the text on the right
             color: Appearance.colors.colOnLayer1
-            text: `${cleanedTitle}${activePlayer?.trackArtist ? ' • ' + activePlayer.trackArtist : ''}`
+            text: `${root.cleanedTitle}${root.activePlayer?.trackArtist ? ' • ' + root.activePlayer.trackArtist : ''}`
         }
     }
 }

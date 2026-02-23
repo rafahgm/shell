@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 
 import qs.Common
-import qs.Functions
+import qs.Common.Functions
 
 Rectangle {
     implicitHeight: 1
