@@ -19,6 +19,12 @@ Rectangle {
     property bool collapsed: Persistent.states.sidebar.bottomGroup.collapsed
     property var tabs: [
         {
+            "type": "media",
+            "name": TranslationService.tr("Media"),
+            "icon": "music_note_2",
+            "widget": "MediaControls/MediaWidget.qml"
+        },
+        {
             "type": "calendar",
             "name": TranslationService.tr("Calendar"),
             "icon": "calendar_month",

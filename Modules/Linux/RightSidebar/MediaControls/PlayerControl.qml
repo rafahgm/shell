@@ -96,13 +96,9 @@ Item { // Player instance
         color: artDominantColor
     }
 
-    StyledRectangularShadow {
-        target: background
-    }
     Rectangle { // Background
         id: background
         anchors.fill: parent
-        anchors.margins: Appearance.sizes.elevationMargin
         color: ColorUtils.applyAlpha(blendedColors.colLayer0, 1)
         radius: root.radius
 
@@ -148,15 +144,16 @@ Item { // Player instance
             color: blendedColors.colPrimary
         }
 
-        RowLayout {
+        ColumnLayout {
             anchors.fill: parent
             anchors.margins: 13
             spacing: 15
 
             Rectangle { // Art background
                 id: artBackground
-                Layout.fillHeight: true
-                implicitWidth: height
+                Layout.alignment: Qt.AlignHCenter
+                implicitWidth: 200
+                implicitHeight: 200
                 radius: Appearance.rounding.verysmall
                 color: ColorUtils.transparentize(blendedColors.colLayer1, 0.5)
 
