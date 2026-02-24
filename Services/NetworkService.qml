@@ -8,7 +8,7 @@ import Quickshell.Io
 import QtQuick
 
 /**
- * Network service with nmcli.
+ * NetworkService service with nmcli.
  */
 Singleton {
     id: root

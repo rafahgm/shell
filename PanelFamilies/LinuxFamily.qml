@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 
 import qs.Common
+import qs.Modules.Linux.Background
 import qs.Modules.Linux.Bar
 import qs.Modules.Linux.Notifications
 import qs.Modules.Linux.OnScreenDisplay
@@ -10,6 +11,9 @@ import qs.Modules.Linux.LeftSidebar
 import qs.Modules.Linux.RightSidebar
 
 Scope {
+    PanelLoader {
+        component: Background {}
+    }
     PanelLoader {
         extraCondition: !Config.options.bar.vertical
         component: Bar {}
