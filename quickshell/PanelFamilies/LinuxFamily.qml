@@ -9,6 +9,7 @@ import qs.Modules.Linux.OnScreenDisplay
 import qs.Modules.Linux.Polkit
 import qs.Modules.Linux.LeftSidebar
 import qs.Modules.Linux.RightSidebar
+import qs.Modules.Linux.WallpaperSelector
 
 Scope {
     PanelLoader {
@@ -33,5 +34,8 @@ Scope {
     }
     PanelLoader {
         component: RightSidebar {}
+    }
+    PanelLoader {
+        component: WallpaperSelector {}
     }
 }
