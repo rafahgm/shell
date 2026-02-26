@@ -22,10 +22,10 @@ Item {
     readonly property int workspacesShown: Config.options.overview.rows * Config.options.overview.columns
     readonly property int workspaceGroup: Math.floor((effectiveActiveWorkspaceId - 1) / workspacesShown)
     property bool monitorIsFocused: (Hyprland.focusedMonitor?.name == monitor.name)
-    property var windows: HyprlandData.windowList
-    property var windowByAddress: HyprlandData.windowByAddress
-    property var windowAddresses: HyprlandData.addresses
-    property var monitorData: HyprlandData.monitors.find(m => m.id === root.monitor?.id)
+    property var windows: HyprlandDataService.windowList
+    property var windowByAddress: HyprlandDataService.windowByAddress
+    property var windowAddresses: HyprlandDataService.addresses
+    property var monitorData: HyprlandDataService.monitors.find(m => m.id === root.monitor?.id)
     property real scale: Config.options.overview.scale
     property color activeBorderColor: Appearance.colors.colSecondary
 
@@ -189,12 +189,12 @@ Item {
                     id: window
                     required property var modelData
                     property int monitorId: windowData?.monitor
-                    property var monitor: HyprlandData.monitors.find(m => m.id == monitorId)
+                    property var monitor: HyprlandDataService.monitors.find(m => m.id == monitorId)
                     property var address: `0x${modelData.HyprlandToplevel.address}`
                     toplevel: modelData
                     monitorData: this.monitor
                     scale: root.scale
-                    widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
+                    widgetMonitor: HyprlandDataService.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
 
                     property bool atInitPosition: (initX == x && initY == y)

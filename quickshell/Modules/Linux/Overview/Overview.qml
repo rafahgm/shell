@@ -44,18 +44,18 @@ Scope {
                 if (!GlobalStates.overviewOpen) {
                     searchWidget.disableExpandAnimation();
                     overviewScope.dontAutoCancelSearch = false;
-                    GlobalFocusGrab.dismiss();
+                    GlobalFocusService.dismiss();
                 } else {
                     if (!overviewScope.dontAutoCancelSearch) {
                         searchWidget.cancelSearch();
                     }
-                    GlobalFocusGrab.addDismissable(panelWindow);
+                    GlobalFocusService.addDismissable(panelWindow);
                 }
             }
         }
 
         Connections {
-            target: GlobalFocusGrab
+            target: GlobalFocusService
             function onDismissed() {
                 GlobalStates.overviewOpen = false;
             }

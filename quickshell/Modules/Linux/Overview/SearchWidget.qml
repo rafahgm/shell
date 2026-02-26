@@ -18,7 +18,7 @@ Item { // Wrapper
     readonly property int typingDebounceInterval: 200
     readonly property int typingResultLimit: 15 // Should be enough to cover the whole view
 
-    property string searchingText: LauncherSearch.query
+    property string searchingText: LauncherSearchService.query
     property bool showResults: searchingText != ""
     implicitWidth: searchWidgetContent.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: searchWidgetContent.implicitHeight + searchBar.verticalPadding * 2 + Appearance.sizes.elevationMargin * 2
@@ -37,13 +37,13 @@ Item { // Wrapper
 
     function cancelSearch() {
         searchBar.searchInput.selectAll();
-        LauncherSearch.query = "";
+        LauncherSearchService.query = "";
         searchBar.animateWidth = true;
     }
 
     function setSearchingText(text) {
         searchBar.searchInput.text = text;
-        LauncherSearch.query = text;
+        LauncherSearchService.query = text;
     }
 
     Keys.onPressed: event => {
@@ -186,14 +186,14 @@ Item { // Wrapper
                     id: debounceTimer
                     interval: root.typingDebounceInterval
                     onTriggered: {
-                        resultModel.values = LauncherSearch.results ?? [];
+                        resultModel.values = LauncherSearchService.results ?? [];
                     }
                 }
 
                 Connections {
-                    target: LauncherSearch
+                    target: LauncherSearchService
                     function onResultsChanged() {
-                        resultModel.values = LauncherSearch.results.slice(0, root.typingResultLimit);
+                        resultModel.values = LauncherSearchService.results.slice(0, root.typingResultLimit);
                         root.focusFirstItem();
                         debounceTimer.restart();
                     }
@@ -215,10 +215,10 @@ Item { // Wrapper
 
                     Keys.onPressed: event => {
                         if (event.key === Qt.Key_Tab) {
-                            if (LauncherSearch.results.length === 0)
+                            if (LauncherSearchService.results.length === 0)
                                 return;
                             const tabbedText = searchItem.modelData.name;
-                            LauncherSearch.query = tabbedText;
+                            LauncherSearchService.query = tabbedText;
                             searchBar.searchInput.text = tabbedText;
                             event.accepted = true;
                             root.focusSearchInput();

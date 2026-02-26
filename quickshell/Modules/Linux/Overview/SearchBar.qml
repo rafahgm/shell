@@ -65,7 +65,7 @@ RowLayout {
         implicitHeight: 40
         focus: GlobalStates.overviewOpen
         font.pixelSize: Appearance.font.pixelSize.small
-        placeholderText: Translation.tr("Search, calculate or run")
+        placeholderText: TranslationService.tr("Search, calculate or run")
         implicitWidth: root.searchingText == "" ? Appearance.sizes.searchWidthCollapsed : Appearance.sizes.searchWidth
 
         Behavior on implicitWidth {
@@ -78,7 +78,7 @@ RowLayout {
             }
         }
 
-        onTextChanged: LauncherSearch.query = text
+        onTextChanged: LauncherSearchService.query = text
 
         onAccepted: {
             if (appResults.count > 0) {
@@ -92,9 +92,9 @@ RowLayout {
 
         Keys.onPressed: event => {
             if (event.key === Qt.Key_Tab) {
-                if (LauncherSearch.results.length === 0) return;
-                const tabbedText = LauncherSearch.results[0].name;
-                LauncherSearch.query = tabbedText;
+                if (LauncherSearchService.results.length === 0) return;
+                const tabbedText = LauncherSearchService.results[0].name;
+                LauncherSearchService.query = tabbedText;
                 searchInput.text = tabbedText;
                 event.accepted = true;
             }
@@ -110,50 +110,7 @@ RowLayout {
         }
         text: "image_search"
         StyledToolTip {
-            text: Translation.tr("Google Lens")
-        }
-    }
-
-    IconToolbarButton {
-        id: songRecButton
-        Layout.topMargin: 4
-        Layout.bottomMargin: 4
-        Layout.rightMargin: 4
-        toggled: SongRec.running
-        onClicked: SongRec.toggleRunning()
-        text: "music_cast"
-
-        StyledToolTip {
-            text: Translation.tr("Recognize music")
-        }
-
-        colText: toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSurfaceVariant
-        background: MaterialShape {
-            RotationAnimation on rotation {
-                running: songRecButton.toggled
-                duration: 12000
-                easing.type: Easing.Linear
-                loops: Animation.Infinite
-                from: 0
-                to: 360
-            }
-            shape: {
-                if (songRecButton.down) {
-                    return songRecButton.toggled ? MaterialShape.Shape.Circle : MaterialShape.Shape.Square
-                } else {
-                    return songRecButton.toggled ? MaterialShape.Shape.SoftBurst : MaterialShape.Shape.Circle
-                }
-            }
-            color: {
-                if (songRecButton.toggled) {
-                    return songRecButton.hovered ? Appearance.colors.colPrimaryHover : Appearance.colors.colPrimary
-                } else {
-                    return songRecButton.hovered ? Appearance.colors.colSurfaceContainerHigh : ColorUtils.transparentize(Appearance.colors.colSurfaceContainerHigh)
-                }
-            }
-            Behavior on color {
-                animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
-            }
+            text: TranslationService.tr("Google Lens")
         }
     }
 }
