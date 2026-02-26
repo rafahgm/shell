@@ -30,7 +30,7 @@ MouseArea {
     }
 
     function handleFilePasting(event) {
-        const currentClipboardEntry = Cliphist.entries[0]
+        const currentClipboardEntry = CliphistService.entries[0]
         if (/^\d+\tfile:\/\/\S+/.test(currentClipboardEntry)) {
             const url = StringUtils.cleanCliphistEntry(currentClipboardEntry);
             WallpapersService.setDirectory(FileUtils.trimFileProtocol(decodeURIComponent(url)));
