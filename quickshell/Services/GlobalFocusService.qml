@@ -24,7 +24,7 @@ Singleton {
     }
 
     Component.onCompleted: {
-        console.log("[GlobalFocusService] Inicializado");
+        console.info("[GlobalFocusService] Inicializado");
     }
 
     function addPersistent(window) {

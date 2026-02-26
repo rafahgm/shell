@@ -361,7 +361,7 @@ Singleton {
 
     function makeRequest(tags, nsfw=false, limit=20, page=1) {
         var url = constructRequestUrl(tags, nsfw, limit, page)
-        console.log("[BooruService] Making request to " + url)
+        console.info("[BooruService] Making request to " + url)
 
         const newResponse = root.booruResponseDataComponent.createObject(null, {
             "provider": currentProvider,
@@ -376,7 +376,6 @@ Singleton {
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 try {
-                    // console.log("[BooruService] Raw response: " + xhr.responseText)
                     const provider = providers[currentProvider]
                     let response;
                     if (provider.manualParseFunc) {
@@ -385,12 +384,11 @@ Singleton {
                         response = JSON.parse(xhr.responseText)
                         response = provider.mapFunc(response)
                     }
-                    // console.log("[BooruService] Mapped response: " + JSON.stringify(response))
                     newResponse.images = response
                     newResponse.message = response.length > 0 ? "" : root.failMessage
                     
                 } catch (e) {
-                    console.log("[BooruService] Failed to parse response: " + e)
+                    console.error("[BooruService] Failed to parse response: " + e)
                     newResponse.message = root.failMessage
                 } finally {
                     root.runningRequests--;
@@ -398,7 +396,7 @@ Singleton {
                 }
             }
             else if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log("[BooruService] Request failed with status: " + xhr.status)
+                console.error("[BooruService] Request failed with status: " + xhr.status)
                 newResponse.message = root.failMessage
                 root.runningRequests--;
                 root.responses = [...root.responses, newResponse]
@@ -418,7 +416,7 @@ Singleton {
             root.runningRequests++;
             xhr.send()
         } catch (error) {
-            console.log("Could not set User-Agent:", error)
+            console.error("Could not set User-Agent:", error)
         } 
     }
 
@@ -444,17 +442,15 @@ Singleton {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
                 currentTagRequest = null
                 try {
-                    // console.log("[BooruService] Raw response: " + xhr.responseText)
                     var response = JSON.parse(xhr.responseText)
                     response = provider.tagMapFunc(response)
-                    // console.log("[BooruService] Mapped response: " + JSON.stringify(response))
                     root.tagSuggestion(query, response)
                 } catch (e) {
-                    console.log("[BooruService] Failed to parse response: " + e)
+                    console.error("[BooruService] Failed to parse response: " + e)
                 }
             }
             else if (xhr.readyState === XMLHttpRequest.DONE) {
-                console.log("[BooruService] Request failed with status: " + xhr.status)
+                console.error("[BooruService] Request failed with status: " + xhr.status)
             }
         }
 
@@ -465,7 +461,7 @@ Singleton {
             }
             xhr.send()
         } catch (error) {
-            console.log("Could not set User-Agent:", error)
+            console.error("Could not set User-Agent:", error)
         } 
     }
 }

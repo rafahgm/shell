@@ -2,7 +2,7 @@ import QtQuick
 import Quickshell
 
 import qs.Common
-import qs.Modules.Linux.Background
+import qs.Modules.Linux
 import qs.Modules.Linux.Bar
 import qs.Modules.Linux.Notifications
 import qs.Modules.Linux.OnScreenDisplay

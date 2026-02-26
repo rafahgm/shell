@@ -68,7 +68,6 @@ Singleton {
 
     onShouldBeOnChanged: ensureState()
     function ensureState() {
-        // console.log("[Hyprsunset] Ensuring state:", root.shouldBeOn, "Automatic mode:", root.automatic);
         if (!root.automatic || root.manualActive !== undefined)
             return;
         if (root.shouldBeOn) {
@@ -82,13 +81,11 @@ Singleton {
 
     function enable() {
         root.active = true;
-        // console.log("[Hyprsunset] Enabling");
         Quickshell.execDetached(["bash", "-c", `pidof hyprsunset || hyprsunset --temperature ${root.colorTemperature}`]);
     }
 
     function disable() {
         root.active = false;
-        // console.log("[Hyprsunset] Disabling");
         Quickshell.execDetached(["bash", "-c", `pkill hyprsunset`]);
     }
 
@@ -108,7 +105,6 @@ Singleton {
                     root.active = false;
                 else
                     root.active = (output != "6500"); // 6500 is the default when off
-                // console.log("[Hyprsunset] Fetched state:", output, "->", root.active);
             }
         }
     }

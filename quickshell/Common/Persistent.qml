@@ -48,7 +48,7 @@ Singleton {
         onAdapterUpdated: fileWriteTimer.restart()
         onLoaded: root.ready = true
         onLoadFailed: error => {
-            console.log("Failed to load persistent states file:", error);
+            console.info("Failed to load persistent states file:", error);
             if (error == FileViewError.FileNotFound) {
                 fileWriteTimer.restart();
             }
