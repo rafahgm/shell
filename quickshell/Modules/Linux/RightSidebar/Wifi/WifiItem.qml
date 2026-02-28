@@ -43,7 +43,7 @@ DialogListItem {
             }
             MaterialSymbol {
                 visible: (root.wifiNetwork?.isSecure || root.wifiNetwork?.active) ?? false
-                text: root.wifiNetwork?.active ? "check" : Network.wifiConnectTarget === root.wifiNetwork ? "settings_ethernet" : "lock"
+                text: root.wifiNetwork?.active ? "check" : NetworkService.wifiConnectTarget === root.wifiNetwork ? "settings_ethernet" : "lock"
                 iconSize: Appearance.font.pixelSize.larger
                 color: Appearance.colors.colOnSurfaceVariant
             }
