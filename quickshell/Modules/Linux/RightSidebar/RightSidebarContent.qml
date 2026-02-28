@@ -12,6 +12,7 @@ import qs.Modules.Linux.RightSidebar.QuickToggles
 import qs.Modules.Linux.RightSidebar.QuickToggles.ClassicStyle
 import qs.Modules.Linux.RightSidebar.VolumeMixer
 import qs.Modules.Linux.RightSidebar.Bluetooth
+import qs.Modules.Linux.RightSidebar.Wifi
 
 Item {
     id: root
@@ -162,6 +163,16 @@ Item {
                 Bluetooth.defaultAdapter.enabled = true;
                 Bluetooth.defaultAdapter.discovering = true;
             }
+        }
+    }
+
+     ToggleDialog {
+        shownPropertyString: "showWifiDialog"
+        dialog: WifiDialog {}
+        onShownChanged: {
+            if (!shown) return;
+            NetworkService.enableWifi();
+            NetworkService.rescanWifi();
         }
     }
 
