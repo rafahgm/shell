@@ -10,11 +10,10 @@ import qs.Modules.Linux.RightSidebar.QuickToggles.AndroidStyle
 
 AbstractQuickPanel {
     id: root
-    property bool editMode: false
     Layout.fillWidth: true
 
     // Sizes
-    implicitHeight: (editMode ? contentItem.implicitHeight : usedRows.implicitHeight) + root.padding * 2
+    implicitHeight: usedRows.implicitHeight + root.padding * 2
     Behavior on implicitHeight {
         animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
     }
@@ -97,7 +96,6 @@ AbstractQuickPanel {
                         }
                         delegate: AndroidToggleDelegateChooser {
                             startingIndex: toggleRow.startingIndex
-                            editMode: root.editMode
                             baseCellWidth: root.baseCellWidth
                             baseCellHeight: root.baseCellHeight
                             spacing: root.spacing
@@ -106,54 +104,6 @@ AbstractQuickPanel {
                             onOpenBluetoothDialog: root.openBluetoothDialog()
                             onOpenNightLightDialog: root.openNightLightDialog()
                             onOpenWifiDialog: root.openWifiDialog()
-                        }
-                    }
-                }
-            }
-        }
-
-        FadeLoader {
-            shown: root.editMode
-            anchors {
-                left: parent.left
-                right: parent.right
-                leftMargin: root.baseCellHeight / 2
-                rightMargin: root.baseCellHeight / 2
-            }
-            sourceComponent: Rectangle {
-                implicitHeight: 1
-                color: Appearance.colors.colOutlineVariant
-            }
-        }
-
-        FadeLoader {
-            shown: root.editMode
-            sourceComponent: Column {
-                id: unusedRows
-                spacing: root.spacing
-
-                Repeater {
-                    model: ScriptModel {
-                        values: Array(root.unusedToggleRows.length)
-                    }
-                    delegate: ButtonGroup {
-                        id: unusedToggleRow
-                        required property int index
-                        property var modelData: root.unusedToggleRows[index]
-                        spacing: root.spacing
-
-                        Repeater {
-                            model: ScriptModel {
-                                values: unusedToggleRow?.modelData ?? []
-                                objectProp: "type"
-                            }
-                            delegate: AndroidToggleDelegateChooser {
-                                startingIndex: -1
-                                editMode: root.editMode
-                                baseCellWidth: root.baseCellWidth
-                                baseCellHeight: root.baseCellHeight
-                                spacing: root.spacing
-                            }
                         }
                     }
                 }

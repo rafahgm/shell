@@ -11,7 +11,6 @@ import qs.Common.Widgets
 
 DelegateChooser {
     id: root
-    property bool editMode: false
     required property real baseCellWidth
     required property real baseCellHeight
     required property real spacing
@@ -31,7 +30,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight
@@ -50,7 +48,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight
@@ -69,7 +66,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight
@@ -88,7 +84,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight
@@ -104,7 +99,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight
@@ -123,7 +117,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight
@@ -142,7 +135,6 @@ DelegateChooser {
             required property var modelData
             buttonIndex: root.startingIndex + index
             buttonData: modelData
-            editMode: root.editMode
             expandedSize: modelData.size > 1
             baseCellWidth: root.baseCellWidth
             baseCellHeight: root.baseCellHeight

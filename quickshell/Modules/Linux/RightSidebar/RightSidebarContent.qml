@@ -25,7 +25,6 @@ Item {
     property bool showBluetoothDialog: false
     property bool showNightLightDialog: false
     property bool showWifiDialog: false
-    property bool editMode: false
 
     Connections {
         target: GlobalStates
@@ -54,7 +53,7 @@ Item {
         color: Appearance.colors.colLayer0
         border.width: 1
         border.color: Appearance.colors.colLayer0Border
-        radius: Appearance.rounding.screenRounding - Appearance.sizes.gapsOut + 1
+        radius: Appearance.rounding.screenRounding
 
         ColumnLayout {
             anchors.fill: parent
@@ -91,9 +90,7 @@ Item {
 
             LoaderedQuickPanelImplementation {
                 styleName: "android"
-                sourceComponent: AndroidQuickPanel {
-                    editMode: root.editMode
-                }
+                sourceComponent: AndroidQuickPanel {}
             }
 
             CenterWidgetGroup {
@@ -167,11 +164,12 @@ Item {
         }
     }
 
-     ToggleDialog {
+    ToggleDialog {
         shownPropertyString: "showWifiDialog"
         dialog: WifiDialog {}
         onShownChanged: {
-            if (!shown) return;
+            if (!shown)
+                return;
             NetworkService.enableWifi();
             NetworkService.rescanWifi();
         }
@@ -258,15 +256,6 @@ Item {
             padding: 4
 
             QuickToggleButton {
-                toggled: root.editMode
-                visible: Config.options.sidebar.quickToggles.style === "android"
-                buttonIcon: "edit"
-                onClicked: root.editMode = !root.editMode
-                StyledToolTip {
-                    text: TranslationService.tr("Edit quick toggles") + (root.editMode ? TranslationService.tr("\nLMB to enable/disable\nRMB to toggle size\nScroll to swap position") : "")
-                }
-            }
-            QuickToggleButton {
                 toggled: false
                 buttonIcon: "restart_alt"
                 onClicked: {
@@ -277,17 +266,7 @@ Item {
                     text: TranslationService.tr("Reload Hyprland & Quickshell")
                 }
             }
-            QuickToggleButton {
-                toggled: false
-                buttonIcon: "settings"
-                onClicked: {
-                    GlobalStates.sidebarRightOpen = false;
-                    Quickshell.execDetached(["qs", "-p", root.settingsQmlPath]);
-                }
-                StyledToolTip {
-                    text: TranslationService.tr("Settings")
-                }
-            }
+
             QuickToggleButton {
                 toggled: false
                 buttonIcon: "power_settings_new"
