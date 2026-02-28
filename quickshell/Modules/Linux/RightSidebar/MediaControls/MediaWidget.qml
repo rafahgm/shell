@@ -51,7 +51,7 @@ ColumnLayout {
 
     Process {
         id: cavaProc
-        running: root.activePlayer.isPlaying
+        running: root.activePlayer?.isPlaying
         onRunningChanged: {
             if (!cavaProc.running) {
                 root.visualizerPoints = [];

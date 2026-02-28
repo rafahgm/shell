@@ -11,6 +11,7 @@ import qs.Common.Widgets
 import qs.Modules.Linux.RightSidebar.QuickToggles
 import qs.Modules.Linux.RightSidebar.QuickToggles.ClassicStyle
 import qs.Modules.Linux.RightSidebar.VolumeMixer
+import qs.Modules.Linux.RightSidebar.Bluetooth
 
 Item {
     id: root
@@ -148,6 +149,19 @@ Item {
         shownPropertyString: "showAudioInputDialog"
         dialog: VolumeDialog {
             isSink: false
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showBluetoothDialog"
+        dialog: BluetoothDialog {}
+        onShownChanged: {
+            if (!shown) {
+                Bluetooth.defaultAdapter.discovering = false;
+            } else {
+                Bluetooth.defaultAdapter.enabled = true;
+                Bluetooth.defaultAdapter.discovering = true;
+            }
         }
     }
 
