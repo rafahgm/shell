@@ -13,6 +13,7 @@ import qs.Modules.Linux.RightSidebar.QuickToggles.ClassicStyle
 import qs.Modules.Linux.RightSidebar.VolumeMixer
 import qs.Modules.Linux.RightSidebar.Bluetooth
 import qs.Modules.Linux.RightSidebar.Wifi
+import qs.Modules.Linux.RightSidebar.NightLight
 
 Item {
     id: root
@@ -174,6 +175,11 @@ Item {
             NetworkService.enableWifi();
             NetworkService.rescanWifi();
         }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showNightLightDialog"
+        dialog: NightLightDialog {}
     }
 
     component LoaderedQuickPanelImplementation: Loader {
